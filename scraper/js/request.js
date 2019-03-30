@@ -12,12 +12,8 @@ const returnBody = (body) => {
     // return new JSDOM(body);
 }
 
-const returnJSON = ($) => {
-    return $(".location",".jobsearch-SerpJobCard")
-}
-
-const returnNumElements = (json) => {
-    return json.length
+const getJobCards = ($) => {
+    return $(".jobsearch-SerpJobCard").toArray()
 }
 
 
@@ -25,7 +21,11 @@ const returnNumElements = (json) => {
 
 request("https://www.indeed.com/jobs?q=React+Developer&explvl=entry_level&fromage=last&start=90", function(err, response, body){
     const $ = returnBody(body);
-    const json = returnJSON($);
-    const numElements = returnNumElements(json);
-    console.log(json[0])
+    const jobs = getJobCards($);
+
+    jobs.forEach(job => {
+        console.log($(job).html())
+        console.log("\n==========================================================\n")
+    })
+    
 })
