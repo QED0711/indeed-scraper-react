@@ -19,7 +19,7 @@ const getJobCards = ($) => {
 
 
 
-request("https://www.indeed.com/jobs?q=React+Developer&explvl=entry_level&fromage=last&start=90", function(err, response, body){
+request("https://www.indeed.com/jobs?q=&l=washington+dc&fromage=last", function(err, response, body){
     const $ = parseHTML(body);
     const jobs = getJobCards($);
     let $$;
@@ -27,10 +27,11 @@ request("https://www.indeed.com/jobs?q=React+Developer&explvl=entry_level&fromag
     let parsedJobs = [];
     jobs.forEach(job => {
         $$ = parseHTML($(job).html());
-
+        // console.log($(job).html())
+        // console.log("\n=====================================================================\n")
         parsedJobs.push({
             title: $$(".jobtitle").text().trim(),
-            // href: $$(".jobTitle").attr("href"),
+            href: `https://www.indeed.com${$$("a").first().attr("href")}`,
             location: $$(".location").text().trim(),
             summary: $$(".paddedSummary").text().trim(),
             responsive: !($$(".serp-ResponsiveEmployer").text() === ""),
