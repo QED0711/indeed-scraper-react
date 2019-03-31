@@ -1,12 +1,6 @@
 const request = require("request");
 const cheerio = require("cheerio");
 
-const jsdom = require('jsdom');
-const { JSDOM } = jsdom;
-
-
-
-
 const parseHTML = (body) => {
     return cheerio.load(body)
     // return new JSDOM(body);
