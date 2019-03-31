@@ -10,19 +10,15 @@ const getJobCards = ($) => {
     return $(".jobsearch-SerpJobCard").toArray()
 }
 
+const parseJobCard = ($, jobCard) => {
+    return parseHTML($(jobCard).html())
+}
 
-
-
-request("https://www.indeed.com/jobs?q=&l=washington+dc&fromage=last", function(err, response, body){
-    const $ = parseHTML(body);
-    const jobs = getJobCards($);
+const returnParsedJobs = (jobs, $) => {
+    let parsedJobs = []
     let $$;
-
-    let parsedJobs = [];
     jobs.forEach(job => {
-        $$ = parseHTML($(job).html());
-        // console.log($(job).html())
-        // console.log("\n=====================================================================\n")
+        $$ = parseJobCard($, job);
         parsedJobs.push({
             title: $$(".jobtitle").text().trim(),
             href: `https://www.indeed.com${$$("a").first().attr("href")}`,
@@ -33,6 +29,18 @@ request("https://www.indeed.com/jobs?q=&l=washington+dc&fromage=last", function(
             sponsored: !($$(".sponsoredGray").text() === "Sponsored")
         })
     })
-    console.log(parsedJobs);
+    return parsedJobs
+}
+
+const sendRequest = (url) => {
+    request(url, function(err, response, body){
+        const $ = parseHTML(body);
+        const jobs = getJobCards($);
+        let parsedJobs = returnParsedJobs(jobs, $);
     
-})
+        console.log(parsedJobs);
+        
+    })
+}
+
+sendRequest("https://www.indeed.com/jobs?q=&l=washington+dc&fromage=last");
