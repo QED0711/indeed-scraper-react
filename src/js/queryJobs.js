@@ -1,5 +1,8 @@
-const request = require("request");
-const cheerio = require("cheerio");
+import request from 'request';
+import cheerio from 'cheerio';
+
+
+// ================================================================
 
 const parseHTML = (body) => {
     return cheerio.load(body)
@@ -36,8 +39,11 @@ const returnParsedJobs = (jobs, $) => {
 }
 
 const queryJobs = (url, limit = 100, index = 0, parsedJobs = []) => {
-
-    request(url + `&start=${index}`, function(err, response, body){
+    request(url + `&start=${index}`, function(err, response, body){    
+        if(err){
+            console.log(err);
+            return
+        }
         const $ = parseHTML(body);
         const jobs = getJobCards($);
         parsedJobs.push(...returnParsedJobs(jobs, $));
@@ -52,6 +58,8 @@ const queryJobs = (url, limit = 100, index = 0, parsedJobs = []) => {
 }
 
 
-queryJobs("https://www.indeed.com/jobs?q=&l=washington+dc&fromage=last", 25);
+
+// queryJobs("https://www.indeed.com/jobs?q=&l=washington+dc&fromage=last", 25);
 
 
+export default queryJobs;
