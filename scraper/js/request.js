@@ -42,19 +42,13 @@ const sendRequest = (url, index = 0, parsedJobs = []) => {
         parsedJobs.push(...returnParsedJobs(jobs, $));
         console.log("+++++++++++++++++++++++++++++ ", index, " +++++++++++++++++++++++++++++");
         if(hasNextPage($)){
-            sendRequest(url, index + 10, parsedJobs)
+            return sendRequest(url, index + 10, parsedJobs);
+        } else {
+            console.log(parsedJobs)
         }
         
     })
-    console.log(parsedJobs)
 }
-
-
-
-
-
-
-
 
 
 sendRequest("https://www.indeed.com/jobs?q=Music&l=Columbus+OH");
