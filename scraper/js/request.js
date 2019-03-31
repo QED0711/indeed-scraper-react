@@ -3,7 +3,6 @@ const cheerio = require("cheerio");
 
 const parseHTML = (body) => {
     return cheerio.load(body)
-    // return new JSDOM(body);
 }
 
 const getJobCards = ($) => {
@@ -12,6 +11,10 @@ const getJobCards = ($) => {
 
 const parseJobCard = ($, jobCard) => {
     return parseHTML($(jobCard).html())
+}
+
+const hasNextPage = ($) => {
+    return !!($(".np").last().text().match(/next/i))
 }
 
 const returnParsedJobs = (jobs, $) => {
@@ -32,15 +35,26 @@ const returnParsedJobs = (jobs, $) => {
     return parsedJobs
 }
 
-const sendRequest = (url) => {
-    request(url, function(err, response, body){
+const sendRequest = (url, index = 0, parsedJobs = []) => {
+    request(url + `&start=${index}`, function(err, response, body){
         const $ = parseHTML(body);
         const jobs = getJobCards($);
-        let parsedJobs = returnParsedJobs(jobs, $);
-    
-        console.log(parsedJobs);
+        parsedJobs.push(...returnParsedJobs(jobs, $));
+        console.log("+++++++++++++++++++++++++++++ ", index, " +++++++++++++++++++++++++++++");
+        if(hasNextPage($)){
+            sendRequest(url, index + 10, parsedJobs)
+        }
         
     })
+    console.log(parsedJobs)
 }
 
-sendRequest("https://www.indeed.com/jobs?q=&l=washington+dc&fromage=last");
+
+
+
+
+
+
+
+
+sendRequest("https://www.indeed.com/jobs?q=Music&l=Columbus+OH");
