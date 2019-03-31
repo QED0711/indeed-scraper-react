@@ -35,14 +35,15 @@ const returnParsedJobs = (jobs, $) => {
     return parsedJobs
 }
 
-const sendRequest = (url, index = 0, parsedJobs = []) => {
+const queryJobs = (url, limit = 100, index = 0, parsedJobs = []) => {
+
     request(url + `&start=${index}`, function(err, response, body){
         const $ = parseHTML(body);
         const jobs = getJobCards($);
         parsedJobs.push(...returnParsedJobs(jobs, $));
         console.log("+++++++++++++++++++++++++++++ ", index, " +++++++++++++++++++++++++++++");
-        if(hasNextPage($)){
-            return sendRequest(url, index + 10, parsedJobs);
+        if(hasNextPage($) && parsedJobs.length < limit){
+            return queryJobs(url, limit, index + 10, parsedJobs);
         } else {
             console.log(parsedJobs)
         }
@@ -51,4 +52,6 @@ const sendRequest = (url, index = 0, parsedJobs = []) => {
 }
 
 
-sendRequest("https://www.indeed.com/jobs?q=Music&l=Columbus+OH");
+queryJobs("https://www.indeed.com/jobs?q=&l=washington+dc&fromage=last", 25);
+
+
